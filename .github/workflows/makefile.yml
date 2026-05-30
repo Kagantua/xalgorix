@@ -1,0 +1,37 @@
+name: Build Linux amd64
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.24.2'
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    
+    - name: Build with make
+      run: make build
+      env:
+        GOOS: linux
+        GOARCH: amd64
+    
+    - name: Upload binary
+      uses: actions/upload-artifact@v4
+      with:
+        name: xalgorix-linux-amd64
+        path: build/xalgorix
